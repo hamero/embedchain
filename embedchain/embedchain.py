@@ -89,17 +89,23 @@ class EmbedChain:
 
     def add(self, data_type, url):
         """
-        Adds the data from the given URL to the vector db.
+        Adds the data from the given URL or local file path to the vector db.
         Loads the data, chunks it, create embedding for each chunk
         and then stores the embedding to vector database.
 
         :param data_type: The type of the data to add.
-        :param url: The URL where the data is located.
+        :param url: The URL where the data is located or the local file path.
         """
         loader = self._get_loader(data_type)
         chunker = self._get_chunker(data_type)
-        self.user_asks.append([data_type, url])
-        self.load_and_embed(loader, chunker, url)
+        if data_type == 'text' and os.path.isfile(url):
+            with open(url, 'r') as file:
+                content = file.read()
+            self.user_asks.append([data_type, content])
+            self.load_and_embed(loader, chunker, content, url)
+        else:
+            self.user_asks.append([data_type, url])
+            self.load_and_embed(loader, chunker, url)
 
     def add_local(self, data_type, content):
         """
@@ -115,13 +121,14 @@ class EmbedChain:
         self.user_asks.append([data_type, content])
         self.load_and_embed(loader, chunker, content)
 
-    def load_and_embed(self, loader, chunker, url):
+    def load_and_embed(self, loader, chunker, url, file_path=None):
         """
-        Loads the data from the given URL, chunks it, and adds it to the database.
+        Loads the data from the given URL or local file, chunks it, and adds it to the database.
 
         :param loader: The loader to use to load the data.
         :param chunker: The chunker to use to chunk the data.
-        :param url: The URL where the data is located.
+        :param url: The URL where the data is located or the local file path.
+        :param file_path: The local file path, if the data is a local file.
         """
         embeddings_data = chunker.create_chunks(loader, url)
         documents = embeddings_data["documents"]
@@ -130,7 +137,6 @@ class EmbedChain:
         # get existing ids, and discard doc if any common id exist.
         existing_docs = self.collection.get(
             ids=ids,
-            # where={"url": url}
         )
         existing_ids = set(existing_docs["ids"])
 
@@ -144,6 +150,12 @@ class EmbedChain:
 
             ids = list(data_dict.keys())
             documents, metadatas = zip(*data_dict.values())
+
+        if file_path:
+            for metadata in metadatas:
+                metadata["file_path"] = file_path
+                metadata["file_size"] = os.path.getsize(file_path)
+                metadata["file_creation_time"] = os.path.getctime(file_path)
 
         self.collection.add(
             documents=documents,
