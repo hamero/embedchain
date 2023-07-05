@@ -10,12 +10,10 @@ openai_ef = embedding_functions.OpenAIEmbeddingFunction(
     organization_id=os.getenv("OPENAI_ORGANIZATION"),
     model_name="text-embedding-ada-002"
 )
-
 class ChromaDB(BaseVectorDB):
-    def __init__(self, db_dir=None, ef=None):
+    def __init__(self, custom_db_dir=None, ef=None):
         self.ef = ef if ef is not None else openai_ef
-        if db_dir is None:
-            db_dir = "db"
+        db_dir = custom_db_dir if custom_db_dir is not None else "db"
         self.client_settings = chromadb.config.Settings(
             chroma_db_impl="duckdb+parquet",
             persist_directory=db_dir,
@@ -30,3 +28,4 @@ class ChromaDB(BaseVectorDB):
         return self.client.get_or_create_collection(
             'embedchain_store', embedding_function=self.ef,
         )
+
