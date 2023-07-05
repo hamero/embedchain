@@ -47,11 +47,12 @@ class EmbedChain:
         self.collection = db.collection
         self.user_asks = []
 
-    def _get_loader(self, data_type):
+    def _get_loader(self, data_type, url=None):
         """
         Returns the appropriate data loader for the given data type.
 
         :param data_type: The type of the data to load.
+        :param url: The URL where the data is located or the local file path.
         :return: The loader for the given data type.
         :raises ValueError: If an unsupported data type is provided.
         """
@@ -60,18 +61,19 @@ class EmbedChain:
             'pdf_file': PdfFileLoader(),
             'web_page': WebPageLoader(),
             'qna_pair': LocalQnaPairLoader(),
-            'text': LocalTextLoader(),
+            'text': LocalTextLoader() if data_type == 'text' and os.path.isfile(url) else LocalTextLoader(),
         }
         if data_type in loaders:
             return loaders[data_type]
         else:
             raise ValueError(f"Unsupported data type: {data_type}")
 
-    def _get_chunker(self, data_type):
+    def _get_chunker(self, data_type, url=None):
         """
         Returns the appropriate chunker for the given data type.
 
         :param data_type: The type of the data to chunk.
+        :param url: The URL where the data is located or the local file path.
         :return: The chunker for the given data type.
         :raises ValueError: If an unsupported data type is provided.
         """
@@ -80,7 +82,7 @@ class EmbedChain:
             'pdf_file': PdfFileChunker(),
             'web_page': WebPageChunker(),
             'qna_pair': QnaPairChunker(),
-            'text': TextChunker(),
+            'text': TextChunker() if data_type == 'text' and os.path.isfile(url) else TextChunker(),
         }
         if data_type in chunkers:
             return chunkers[data_type]
@@ -96,16 +98,10 @@ class EmbedChain:
         :param data_type: The type of the data to add.
         :param url: The URL where the data is located or the local file path.
         """
-        loader = self._get_loader(data_type)
-        chunker = self._get_chunker(data_type)
-        if data_type == 'text' and os.path.isfile(url):
-            with open(url, 'r') as file:
-                content = file.read()
-            self.user_asks.append([data_type, content])
-            self.load_and_embed(loader, chunker, content, url)
-        else:
-            self.user_asks.append([data_type, url])
-            self.load_and_embed(loader, chunker, url)
+        loader = self._get_loader(data_type, url)
+        chunker = self._get_chunker(data_type, url)
+        self.user_asks.append([data_type, url])
+        self.load_and_embed(loader, chunker, url)
 
     def add_local(self, data_type, content):
         """
