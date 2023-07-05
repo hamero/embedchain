@@ -112,7 +112,10 @@ class EmbedChain:
         documents = embeddings_data["documents"]
         metadatas = embeddings_data["metadatas"]
         ids = embeddings_data["ids"]
-        # get existing ids, and discard doc if any common id exist.
+        if not os.path.isfile(url):
+            existing_docs = self.collection.get(
+                ids=ids,
+            )
         existing_docs = self.collection.get(
             ids=ids,
         )
