@@ -117,17 +117,16 @@ class EmbedChain:
         self.user_asks.append([data_type, content])
         self.load_and_embed(loader, chunker, content)
 
-    def load_and_embed(self, loader, chunker, url, file_path=None):
+    def load_and_embed(self, loader, chunker, url):
         """
         Loads the data from the given URL or local file, chunks it, and adds it to the database.
 
         :param loader: The loader to use to load the data.
         :param chunker: The chunker to use to chunk the data.
         :param url: The URL where the data is located or the local file path.
-        :param file_path: The local file path, if the data is a local file.
         """
-        if file_path:
-            embeddings_data = chunker.create_chunks(loader, file_path)
+        if os.path.isfile(url):
+            embeddings_data = chunker.create_chunks(loader, url)
         else:
             embeddings_data = chunker.create_chunks(loader, url)
         documents = embeddings_data["documents"]
@@ -150,11 +149,11 @@ class EmbedChain:
             ids = list(data_dict.keys())
             documents, metadatas = zip(*data_dict.values())
 
-        if file_path:
+        if os.path.isfile(url):
             for metadata in metadatas:
-                metadata["file_path"] = file_path
-                metadata["file_size"] = os.path.getsize(file_path)
-                metadata["file_creation_time"] = os.path.getctime(file_path)
+                metadata["file_path"] = url
+                metadata["file_size"] = os.path.getsize(url)
+                metadata["file_creation_time"] = os.path.getctime(url)
 
         self.collection.add(
             documents=documents,
