@@ -1,6 +1,7 @@
 class LocalTextLoader:
 
     def load_data(self, url):
+        import os  # Added import statement for os module
         meta_data = {
             "url": "local",
         }
