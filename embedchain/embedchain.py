@@ -47,15 +47,7 @@ class EmbedChain:
         self.collection = db.collection
         self.user_asks = []
 
-    def _get_loader(self, data_type, url=None):
-        """
-        Returns the appropriate data loader for the given data type.
-
-        :param data_type: The type of the data to load.
-        :param url: The URL where the data is located or the local file path.
-        :return: The loader for the given data type.
-        :raises ValueError: If an unsupported data type is provided.
-        """
+    def _get_loader(self, data_type):
         loaders = {
             'youtube_video': YoutubeVideoLoader(),
             'pdf_file': PdfFileLoader(),
@@ -90,15 +82,7 @@ class EmbedChain:
             raise ValueError(f"Unsupported data type: {data_type}")
 
     def add(self, data_type, url):
-        """
-        Adds the data from the given URL or local file path to the vector db.
-        Loads the data, chunks it, create embedding for each chunk
-        and then stores the embedding to vector database.
-
-        :param data_type: The type of the data to add.
-        :param url: The URL where the data is located or the local file path.
-        """
-        loader = self._get_loader(data_type, url)
+        loader = self._get_loader(data_type)
         chunker = self._get_chunker(data_type, url)
         self.load_and_embed(loader, chunker, url)
 
