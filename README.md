@@ -1,6 +1,7 @@
 
 
 
+
 # embedchain
 
 [![](https://dcbadge.vercel.app/api/server/nhvCbCtKV?style=flat)](https://discord.gg/nhvCbCtKV)
@@ -21,9 +22,8 @@ You can add a single or multiple dataset using `.add` and `.add_local` function 
 If you want to create a Naval Ravikant bot which has 1 youtube video, 1 book as pdf and 2 of his blog posts, as well as a question and answer pair you supply, all you need to do is add the links to the videos, pdf and blog posts and the QnA pair and embedchain will create a bot for you.
 
 ```python
-
 from embedchain import App
-naval_chat_bot = App(custom_db_dir="/path/to/your/custom/location")
+naval_chat_bot = App(db_dir="/path/to/your/custom/location")
 
 naval_chat_bot = App()
 
@@ -70,6 +70,8 @@ from embedchain import App
 naval_chat_bot = App(db_dir="/path/to/your/custom/location")
 ```
 from embedchain import App
+
+naval_chat_bot = App(db_dir="/path/to/your/custom/location")
 naval_chat_bot = App(custom_db_dir="/path/to/your/custom/location")
 
 naval_chat_bot = App(custom_db_dir="/path/to/your/custom/location")
@@ -91,6 +93,7 @@ os.environ["OPENAI_API_KEY"] = "sk-xxxx"
 ```python
 from embedchain import OpenSourceApp
 ```python
+from embedchain import OpenSourceApp
 from embedchain import OpenSourceApp
 
 naval_chat_bot = OpenSourceApp(db_dir="/path/to/your/custom/location")
