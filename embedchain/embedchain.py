@@ -101,27 +101,19 @@ class EmbedChain:
 
     def load_and_embed(self, loader, chunker, url):
         """
-        Loads the data from the given URL or local file, chunks it, and adds it to the database.
+        Loads the data from the given URL, chunks it, and adds it to the database.
 
         :param loader: The loader to use to load the data.
         :param chunker: The chunker to use to chunk the data.
         :param url: The URL where the data is located or the local file path.
         """
-        if os.path.isfile(url):
-            embeddings_data = chunker.create_chunks(loader, url)
-        else:
-            embeddings_data = chunker.create_chunks(loader)
+        embeddings_data = chunker.create_chunks(loader, url)
         documents = embeddings_data["documents"]
         metadatas = embeddings_data["metadatas"]
         ids = embeddings_data["ids"]
-        if not os.path.isfile(url):
-            existing_docs = self.collection.get(
-                ids=ids,
-            )
-        else:
-            existing_docs = self.collection.get(
-                ids=ids,
-            )
+        existing_docs = self.collection.get(
+            ids=ids,
+        )
         existing_ids = set(existing_docs["ids"])
 
         if len(existing_ids):
