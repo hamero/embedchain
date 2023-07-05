@@ -33,12 +33,12 @@ ABS_PATH = os.getcwd()
 DB_DIR = os.path.join(ABS_PATH, "db")
 class EmbedChain:
     def __init__(self, db_dir=None, db=None, ef=None):
-        '''
+        """
         Initializes the EmbedChain instance, sets up a vector DB client and
         creates a collection.
 
         :param db: The instance of the VectorDB subclass.
-        '''
+        """
         if db is None:
             db = ChromaDB(db_dir=db_dir, ef=ef)
         self.db_client = db.client
@@ -64,7 +64,6 @@ class EmbedChain:
             return loaders[data_type]
         else:
             raise ValueError(f"Unsupported data type: {data_type}")
-
     def _get_chunker(self, data_type):
         """
         Returns the appropriate chunker for the given data type.
@@ -84,7 +83,6 @@ class EmbedChain:
             return chunkers[data_type]
         else:
             raise ValueError(f"Unsupported data type: {data_type}")
-
     def add(self, data_type, url):
         """
         Adds the data from the given URL to the vector db.
@@ -98,7 +96,6 @@ class EmbedChain:
         chunker = self._get_chunker(data_type)
         self.user_asks.append([data_type, url])
         self.load_and_embed(loader, chunker, url)
-
     def add_local(self, data_type, content):
         """
         Adds the data you supply to the vector db.
@@ -112,7 +109,6 @@ class EmbedChain:
         chunker = self._get_chunker(data_type)
         self.user_asks.append([data_type, content])
         self.load_and_embed(loader, chunker, content)
-
     def load_and_embed(self, loader, chunker, url):
         """
         Loads the data from the given URL, chunks it, and adds it to the database.
@@ -149,18 +145,10 @@ class EmbedChain:
             ids=ids
         )
         print(f"Successfully saved {url}. Total chunks count: {self.collection.count()}")
-
-    def _format_result(self, results):
-        return [
-            (Document(page_content=result[0], metadata=result[1] or {}), result[2])
-            for result in zip(
-                results["documents"][0],
-                results["metadatas"][0],
-                results["distances"][0],
-            )
-        ]
-
     def get_llm_model_answer(self, prompt):
+        """
+        This method is not implemented in this class and should be implemented in subclasses.
+        """
         raise NotImplementedError
 
     def retrieve_from_database(self, input_query):
@@ -181,7 +169,6 @@ class EmbedChain:
         else:
             content = ""
         return content
-
     def generate_prompt(self, input_query, context):
         """
         Generates a prompt based on the given query and context, ready to be passed to an LLM
@@ -190,13 +177,11 @@ class EmbedChain:
         :param context: Similar documents to the query used as context.
         :return: The prompt
         """
-        prompt = f"""Use the following pieces of context to answer the query at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
-        {context}
+        prompt = f"""{context}
         Query: {input_query}
         Helpful Answer:
         """
         return prompt
-
     def get_answer_from_llm(self, prompt):
         """
         Gets an answer based on the given query and context by passing it
@@ -206,9 +191,7 @@ class EmbedChain:
         :param context: Similar documents to the query used as context.
         :return: The answer.
         """
-        answer = self.get_llm_model_answer(prompt)
         return answer
-
     def query(self, input_query):
         """
         Queries the vector database based on the given input query.
@@ -222,8 +205,6 @@ class EmbedChain:
         prompt = self.generate_prompt(input_query, context)
         answer = self.get_answer_from_llm(prompt)
         return answer
-
-
 class App(EmbedChain):
     """
     The EmbedChain app.
@@ -252,8 +233,6 @@ class App(EmbedChain):
             top_p=1,
         )
         return response["choices"][0]["message"]["content"]
-
-
 class OpenSourceApp(EmbedChain):
     """
     The OpenSource app.
