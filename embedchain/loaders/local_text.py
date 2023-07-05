@@ -3,7 +3,7 @@ class LocalTextLoader:
     def load_data(self, url):
         import os  # Added import statement for os module
         meta_data = {
-            "url": "local",
+            "url": url,
         }
         if os.path.isfile(url):
             with open(url, 'r') as file:
