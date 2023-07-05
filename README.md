@@ -2,6 +2,7 @@
 
 
 
+
 # embedchain
 
 [![](https://dcbadge.vercel.app/api/server/nhvCbCtKV?style=flat)](https://discord.gg/nhvCbCtKV)
@@ -89,7 +90,6 @@ os.environ["OPENAI_API_KEY"] = "sk-xxxx"
 ```
 
 #### 2. OpenSourceApp (uses opensource models, free)
-
 ```python
 from embedchain import OpenSourceApp
 ```python
