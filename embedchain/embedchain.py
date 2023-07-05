@@ -60,12 +60,11 @@ class EmbedChain:
         else:
             raise ValueError(f"Unsupported data type: {data_type}")
 
-    def _get_chunker(self, data_type, url=None):
+    def _get_chunker(self, data_type):
         """
         Returns the appropriate chunker for the given data type.
 
         :param data_type: The type of the data to chunk.
-        :param url: The URL where the data is located or the local file path.
         :return: The chunker for the given data type.
         :raises ValueError: If an unsupported data type is provided.
         """
@@ -83,7 +82,7 @@ class EmbedChain:
 
     def add(self, data_type, url):
         loader = self._get_loader(data_type)
-        chunker = self._get_chunker(data_type, url)
+        chunker = self._get_chunker(data_type)
         self.load_and_embed(loader, chunker, url)
 
     def add_local(self, data_type, content):
@@ -108,7 +107,10 @@ class EmbedChain:
         :param chunker: The chunker to use to chunk the data.
         :param url: The URL where the data is located or the local file path.
         """
-        embeddings_data = chunker.create_chunks(loader, url)
+        if os.path.isfile(url):
+            embeddings_data = chunker.create_chunks(loader, url)
+        else:
+            embeddings_data = chunker.create_chunks(loader)
         documents = embeddings_data["documents"]
         metadatas = embeddings_data["metadatas"]
         ids = embeddings_data["ids"]
@@ -116,9 +118,10 @@ class EmbedChain:
             existing_docs = self.collection.get(
                 ids=ids,
             )
-        existing_docs = self.collection.get(
-            ids=ids,
-        )
+        else:
+            existing_docs = self.collection.get(
+                ids=ids,
+            )
         existing_ids = set(existing_docs["ids"])
 
         if len(existing_ids):
