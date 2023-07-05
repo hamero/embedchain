@@ -31,18 +31,16 @@ load_dotenv()
 
 ABS_PATH = os.getcwd()
 DB_DIR = os.path.join(ABS_PATH, "db")
-
-
 class EmbedChain:
-    def __init__(self, db=None, ef=None):
-        """
+    def __init__(self, custom_db_dir=None, db=None, ef=None):
+        '''
         Initializes the EmbedChain instance, sets up a vector DB client and
         creates a collection.
 
         :param db: The instance of the VectorDB subclass.
-        """
+        '''
         if db is None:
-            db = ChromaDB(ef=ef)
+            db = ChromaDB(db_dir=custom_db_dir, ef=ef)
         self.db_client = db.client
         self.collection = db.collection
         self.user_asks = []
@@ -239,7 +237,7 @@ class App(EmbedChain):
         if ef is None:
             ef = openai_ef
         self.model = model
-        super().__init__(db, ef)
+        super().__init__(db=db, ef=ef)
 
     def get_llm_model_answer(self, prompt):
         messages = []
@@ -272,7 +270,7 @@ class OpenSourceApp(EmbedChain):
         if ef is None:
             ef = sentence_transformer_ef
         print("Successfully loaded open source embedding model.")
-        super().__init__(db, ef)
+        super().__init__(db=db, ef=ef)
 
     def get_llm_model_answer(self, prompt):
         global gpt4all_model
