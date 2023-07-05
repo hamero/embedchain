@@ -1,17 +1,15 @@
 class LocalTextLoader:
 
-    def load_data(self, file_path=None, url=None):
+    def load_data(self, url):
         meta_data = {
             "url": "local",
         }
-        if file_path:
-            with open(file_path, 'r') as file:
+        if os.path.isfile(url):
+            with open(url, 'r') as file:
                 content = file.read()
-        elif url:
+        else:
             # Assuming we have a function named `download_content` to download the content from the url
             content = download_content(url)
-        else:
-            raise ValueError("Either file_path or url must be provided.")
         return [{
             "content": content,
             "meta_data": meta_data,
