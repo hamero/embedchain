@@ -126,7 +126,10 @@ class EmbedChain:
         :param url: The URL where the data is located or the local file path.
         :param file_path: The local file path, if the data is a local file.
         """
-        embeddings_data = chunker.create_chunks(loader, url)
+        if file_path:
+            embeddings_data = chunker.create_chunks(loader, file_path)
+        else:
+            embeddings_data = chunker.create_chunks(loader, url)
         documents = embeddings_data["documents"]
         metadatas = embeddings_data["metadatas"]
         ids = embeddings_data["ids"]
