@@ -1,5 +1,6 @@
 
 
+
 # embedchain
 
 [![](https://dcbadge.vercel.app/api/server/nhvCbCtKV?style=flat)](https://discord.gg/nhvCbCtKV)
@@ -55,7 +56,7 @@ Creating a chatbot involves 3 steps:
 - import the App instance
 - add dataset
 - query on the dataset and get answers
-
+You can also specify a custom location for the ChromaDB index by passing a path to the `db_dir` parameter when creating an instance of the EmbedChain class.
 You can also specify a custom location for the ChromaDB index by passing a path to the `custom_db_dir` parameter when creating an instance of the EmbedChain class.
 
 ### App Types
@@ -63,8 +64,11 @@ You can also specify a custom location for the ChromaDB index by passing a path 
 We have two types of App.
 
 #### 1. App (uses OpenAI models, paid)
-
 ```python
+from embedchain import App
+
+naval_chat_bot = App(db_dir="/path/to/your/custom/location")
+```
 from embedchain import App
 naval_chat_bot = App(custom_db_dir="/path/to/your/custom/location")
 
@@ -86,7 +90,11 @@ os.environ["OPENAI_API_KEY"] = "sk-xxxx"
 
 ```python
 from embedchain import OpenSourceApp
+```python
+from embedchain import OpenSourceApp
 
+naval_chat_bot = OpenSourceApp(db_dir="/path/to/your/custom/location")
+```
 naval_chat_bot = OpenSourceApp()
 ```
 
