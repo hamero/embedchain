@@ -1,3 +1,4 @@
+
 # embedchain
 
 [![](https://dcbadge.vercel.app/api/server/nhvCbCtKV?style=flat)](https://discord.gg/nhvCbCtKV)
@@ -45,7 +46,6 @@ First make sure that you have the package installed. If not, then install it usi
 ```bash
 pip install embedchain
 ```
-
 ## Usage
 
 Creating a chatbot involves 3 steps:
@@ -53,6 +53,8 @@ Creating a chatbot involves 3 steps:
 - import the App instance
 - add dataset
 - query on the dataset and get answers
+
+You can also specify a custom location for the ChromaDB index by passing a path to the `custom_db_dir` parameter when creating an instance of the EmbedChain class.
 
 ### App Types
 
@@ -63,7 +65,7 @@ We have two types of App.
 ```python
 from embedchain import App
 
-naval_chat_bot = App()
+naval_chat_bot = App(custom_db_dir="/path/to/your/custom/location")
 ```
 
 * `App` uses OpenAI's model, so these are paid models. You will be charged for embedding model usage and LLM usage.
@@ -264,3 +266,4 @@ If you utilize this repository, please consider citing it with:
   howpublished = {\url{https://github.com/embedchain/embedchain}},
 }
 ```
+
