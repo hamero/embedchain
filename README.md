@@ -1,4 +1,5 @@
 
+
 # embedchain
 
 [![](https://dcbadge.vercel.app/api/server/nhvCbCtKV?style=flat)](https://discord.gg/nhvCbCtKV)
@@ -21,6 +22,7 @@ If you want to create a Naval Ravikant bot which has 1 youtube video, 1 book as 
 ```python
 
 from embedchain import App
+naval_chat_bot = App(custom_db_dir="/path/to/your/custom/location")
 
 naval_chat_bot = App()
 
@@ -64,6 +66,7 @@ We have two types of App.
 
 ```python
 from embedchain import App
+naval_chat_bot = App(custom_db_dir="/path/to/your/custom/location")
 
 naval_chat_bot = App(custom_db_dir="/path/to/your/custom/location")
 ```
@@ -265,5 +268,4 @@ If you utilize this repository, please consider citing it with:
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/embedchain/embedchain}},
 }
-```
 
