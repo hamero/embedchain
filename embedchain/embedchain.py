@@ -1,4 +1,3 @@
-import openai
 import os
 
 from chromadb.utils import embedding_functions
@@ -236,9 +235,10 @@ class App(EmbedChain):
     query(query): finds answer to the given query using vector database and LLM.
     """
 
-    def __int__(self, db=None, ef=None):
+    def __init__(self, model="gpt-3.5-turbo-0613", db=None, ef=None):
         if ef is None:
             ef = openai_ef
+        self.model = model
         super().__init__(db, ef)
 
     def get_llm_model_answer(self, prompt):
@@ -247,7 +247,7 @@ class App(EmbedChain):
             "role": "user", "content": prompt
         })
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo-0613",
+            model=self.model,
             messages=messages,
             temperature=0,
             max_tokens=1000,
@@ -282,3 +282,4 @@ class OpenSourceApp(EmbedChain):
             prompt=prompt,
         )
         return response
+
